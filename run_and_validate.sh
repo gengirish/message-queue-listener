@@ -38,6 +38,18 @@ check_java() {
     print_success "Java found: $(java -version 2>&1 | head -n 1)"
 }
 
+check_rabbitmq() {
+    print_status "Checking RabbitMQ availability on localhost:5672..."
+    if timeout 2 bash -c "</dev/tcp/localhost/5672" 2>/dev/null; then
+        print_success "RabbitMQ is running on localhost:5672"
+        export RABBITMQ_AVAILABLE=1
+    else
+        print_warning "RabbitMQ is NOT running on localhost:5672"
+        print_warning "RabbitMQ-related tests will be skipped."
+        export RABBITMQ_AVAILABLE=0
+    fi
+}
+
 validate_project_structure() {
     print_status "Validating project structure..."
     required_files=(
@@ -107,6 +119,14 @@ generate_report() {
     java -version >> validation_report.txt 2>&1
     echo "" >> validation_report.txt
 
+    echo "RabbitMQ Availability:" >> validation_report.txt
+    if [[ "$RABBITMQ_AVAILABLE" == "1" ]]; then
+        echo "RabbitMQ is running on localhost:5672" >> validation_report.txt
+    else
+        echo "RabbitMQ is NOT running on localhost:5672. RabbitMQ-related tests were skipped." >> validation_report.txt
+    fi
+    echo "" >> validation_report.txt
+
     echo "Dependencies:" >> validation_report.txt
     mvn dependency:list -q >> validation_report.txt 2>&1
     echo "" >> validation_report.txt
@@ -132,6 +152,7 @@ main() {
     print_header "Spring Boot Message Queue Listener Project Validation"
     check_java
     check_maven
+    check_rabbitmq
     validate_project_structure
     clean_project
     check_dependencies
