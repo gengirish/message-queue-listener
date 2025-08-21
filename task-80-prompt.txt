@@ -1,0 +1,7 @@
+Message queue listener
+
+Description: Create a component that listens for messages on a JMS or AMQP queue (e.g., RabbitMQ or ActiveMQ). Write a method and annotate it with @RabbitListener or @JmsListener, specifying the queue name. This method will be automatically invoked by the Spring container whenever a new message arrives on that queue.
+
+Skills Tested: Message queue concepts, Spring's messaging support (@JmsListener, @RabbitListener), and event-driven architecture.
+
+API response wrapper

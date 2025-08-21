@@ -1,0 +1,19 @@
+# Spring Boot Message Queue Listener - Single File Prompt
+
+Create a single Java file implementing a Spring Boot application that listens to both JMS (ActiveMQ) and AMQP (RabbitMQ) queues. The solution must:
+
+- Use Spring Boot 3.x, Java 17+, and Maven.
+- Contain all configuration and listener logic in one file (`MessageQueueListenerApplication.java`).
+- Support both @JmsListener and @RabbitListener methods for message processing.
+- Use @Value for property injection and @Bean methods for all configuration.
+- Include error handling, logging, and retry logic in listener methods.
+- Use static inner classes for message payloads and validation.
+- Demonstrate event-driven architecture and best practices.
+- Be production-ready, readable, and well-organized.
+
+Deliverables:
+- Single Java file with all logic and configuration.
+- application.yml and pom.xml for configuration and dependencies.
+- Basic integration test to verify context and bean setup.
+
+Keep the implementation concise, clear, and maintainable.

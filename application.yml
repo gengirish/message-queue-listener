@@ -1,0 +1,108 @@
+# Spring Boot Application Configuration
+spring:
+  application:
+    name: message-queue-listener-app
+
+  # JMS Configuration for ActiveMQ
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+    pool:
+      enabled: true
+      max-connections: 10
+      idle-timeout: 30000
+
+  # RabbitMQ Configuration
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 60000
+    requested-heartbeat: 60
+    publisher-confirms: true
+    publisher-returns: true
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        multiplier: 2
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 2
+        default-requeue-rejected: false
+        acknowledge-mode: auto
+        concurrency: 1
+        max-concurrency: 3
+
+# Custom Application Properties
+activemq:
+  broker-url: ${ACTIVEMQ_BROKER_URL:tcp://localhost:61616}
+  user: ${ACTIVEMQ_USER:admin}
+  password: ${ACTIVEMQ_PASSWORD:admin}
+
+rabbitmq:
+  host: ${RABBITMQ_HOST:localhost}
+  port: ${RABBITMQ_PORT:5672}
+  username: ${RABBITMQ_USERNAME:guest}
+  password: ${RABBITMQ_PASSWORD:guest}
+  queue:
+    name: ${RABBITMQ_QUEUE_NAME:test.rabbit.queue}
+  exchange:
+    name: ${RABBITMQ_EXCHANGE_NAME:test.exchange}
+  routing:
+    key: ${RABBITMQ_ROUTING_KEY:test.routing.key}
+
+jms:
+  queue:
+    name: ${JMS_QUEUE_NAME:test.jms.queue}
+
+# Logging Configuration
+logging:
+  level:
+    com.example.messagequeue: INFO
+    org.springframework.jms: DEBUG
+    org.springframework.amqp: DEBUG
+    org.apache.activemq: WARN
+    com.rabbitmq: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/message-queue-listener.log
+
+# Management and Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    jms:
+      enabled: true
+    rabbit:
+      enabled: true
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Application Info
+info:
+  app:
+    name: Message Queue Listener Application
+    description: Spring Boot application demonstrating JMS and AMQP message listeners
+    version: 1.0.0
+    author: System Generated
